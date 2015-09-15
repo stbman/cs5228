@@ -41,6 +41,10 @@ cwd = os.getcwd()
 flt_2007 = read_csv_from_hdfs('/Users/lynnette/Documents/CS5228 Knowledge Discovery and Data Mining/cs5228/data/2007.csv', cols)
 #print flt_2007.shape
 
+print flt_2007['Origin'].unique()
+
+
+'''
 df = flt_2007[flt_2007['Origin'] == 'ORD'].dropna(subset=['DepDelay'])
 df['DepDelayed'] = df['DepDelay'].apply(lambda x: x>=15)
 #print "total flights: " + str(df.shape[0])
@@ -63,4 +67,5 @@ grouped2 = grouped1.groupby('Carrier').mean()
 carrier = grouped2.sort(['DepDelayed'], ascending=False)
 # Display top 15 destinations
 carrier[:15].plot(kind='bar')
+'''
 

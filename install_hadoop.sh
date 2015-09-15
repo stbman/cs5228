@@ -14,6 +14,7 @@ echo 'export HADOOP_HOME=/usr/local/Cellar/hadoop/2.7.1/libexec/' >> ~/.bashrc
 brew update
 pip install pydoop
 
+'''
 ssh-keygen -t dsa -P '' -f ~/.ssh/id_dsa
 cat ~/.ssh/id_dsa.pub >> ~/.ssh/authorized_keys
 
@@ -24,3 +25,4 @@ brew install pig
 echo 'export PIG_Home=/usr/local/Cellar/pig/0.15.0' >> ~/.bashrc
 
 source ~/.bashrc
+'''
