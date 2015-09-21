@@ -38,6 +38,7 @@ cols = ['year', 'month', 'day', 'dow', 'DepTime', 'CRSDepTime', 'ArrTime', 'CRSA
 		
 cwd = os.getcwd()
 # Assume all the data files are stored in cwd/data
+<<<<<<< HEAD
 flt_2007 = read_csv_from_hdfs(cwd + '/data/2007.csv', cols)
 flt_2007 = flt_2007.ix[1:]
 #print flt_2007.shape
@@ -77,6 +78,15 @@ df2 = df2.T
 
 
 
+=======
+flt_2007 = read_csv_from_hdfs('/Users/lynnette/Documents/CS5228 Knowledge Discovery and Data Mining/cs5228/data/2007.csv', cols)
+#print flt_2007.shape
+
+print flt_2007['Origin'].unique()
+
+
+'''
+>>>>>>> 53c713eb4f2044a8a5aa3e9d75b4a16b41a3de9e
 df = flt_2007[flt_2007['Origin'] == 'ORD'].dropna(subset=['DepDelay'])
 df['DepDelayed'] = df['DepDelay'].apply(lambda x: x>=15)
 #print "total flights: " + str(df.shape[0])
@@ -99,5 +109,9 @@ grouped2 = grouped1.groupby('Carrier').mean()
 carrier = grouped2.sort(['DepDelayed'], ascending=False)
 # Display top 15 destinations
 carrier[:15].plot(kind='bar')
+<<<<<<< HEAD
 
+=======
+'''
+>>>>>>> 53c713eb4f2044a8a5aa3e9d75b4a16b41a3de9e
 
