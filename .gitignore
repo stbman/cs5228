@@ -1,0 +1,6 @@
+.DS_STORE
+info/
+*.pyc
+*.log
+*.pptx
+data/2007.csv
