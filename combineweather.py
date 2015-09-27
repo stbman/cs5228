@@ -5,7 +5,6 @@ Combining weather data with flight data
 For Year 2007 
 '''
 
-import os
 import datetime
 from datetime import date 
 import linecache
@@ -13,6 +12,7 @@ import linecache
 import numpy as np
 import pandas as pd
 
+'''
 import pydoop.hdfs as hdfs
 
 def read_csv_from_hdfs(path, col, col_types=None):
@@ -23,7 +23,8 @@ def read_csv_from_hdfs(path, col, col_types=None):
 		pieces.append(pd.read_csv(fhandle, names=col, dtype=col_types))
 		fhandle.close()
 	return pd.concat(pieces, ignore_index=True)
-	
+'''
+
 def mean_weather_data():
 	time_frame = pd.date_range(datetime.date(2007,01,01), datetime.date(2008,12,31))
 	time_frame_mapped = map(lambda x: int(float(x.strftime("%Y%m%d"))), time_frame)
@@ -81,20 +82,25 @@ def mean_weather_data():
 	df.to_csv('USA.csv', index=None)
 
 	return df
-	
+
 def combine_weather():
-	cols = ['Year', 'Month', 'Day', 'DayOfWeek', 'DepTime', 'CRSDepTime', 'ArrTime', 'CRSArrTime',
-			'Carrier', 'FlightNum', 'TailNum', 'ActualElapsedTime', 'CRSElapsedTime', 'AirTime',
-			'ArrDelay', 'DepDelay', 'Origin', 'Dest', 'Distance', 'TaxiIn', 'TaxiOut', 'Cancelled',
-			'CancellationCode', 'Diverted', 'CarrierDelay', 'WeatherDelay', 'NASDelay', 
-			'SecurityDelay', 'LateAircraftDelay']
+	cols = ['Year', 'Month', 'DayofMonth', 'DayOfWeek', 'DepTime', 'CRSDepTime',
+       'ArrTime', 'CRSArrTime', 'UniqueCarrier', 'FlightNum', 'TailNum',
+       'ActualElapsedTime', 'CRSElapsedTime', 'AirTime', 'ArrDelay',
+       'DepDelay', 'Origin', 'Dest', 'Distance', 'TaxiIn', 'TaxiOut',
+       'Cancelled', 'CancellationCode', 'Diverted', 'CarrierDelay',
+       'WeatherDelay', 'NASDelay', 'SecurityDelay', 'LateAircraftDelay']
 			
 	# Read the 2007 year file, stored in data/2007.csv 
 	
 	cwd = os.getcwd()
 	
+	'''
 	flt_2007 = read_csv_from_hdfs(cwd + '/data/2007.csv', cols)
 	flt_2007 = flt_2007.ix[1:]
+	'''
+	
+	flt_2007 = pd.read_csv('data/2007.csv')
 	
 	print 'Got Year 2007 Flight Data'
 	
@@ -109,7 +115,7 @@ def combine_weather():
 	for index, row in flt_2007.iterrows():
 		print index
 	
-		flight_date = date(int(float(row.Year)), int(float(row.Month)), int(float(row.Day)))
+		flight_date = date(int(float(row.Year)), int(float(row.Month)), int(float(row.DayofMonth)))
 		diff = (flight_date-start_date).days
 		
 		filename = row.Origin + '.csv'
