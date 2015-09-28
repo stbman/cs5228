@@ -3,7 +3,6 @@
 
 US Flight Airline Data from 1987 through 2008: http://stat-computing.org/dataexpo/2009/
 
-
 ### References
 * https://github.com/ofermend/IPython-notebooks/blob/master/blog-part-1.ipynb
 * http://cs-people.bu.edu/dgs/courses/cs105/hall_of_fame/timoteo.html

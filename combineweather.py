@@ -11,6 +11,7 @@ import linecache
 
 import numpy as np
 import pandas as pd
+import os
 
 '''
 import pydoop.hdfs as hdfs
@@ -48,39 +49,40 @@ def mean_weather_data():
 	df['AWND'] = 0
 	df['PRCP'] = 0
 	
+	
 	for file in os.listdir('data/weather'):
-		df_file = pd.read_csv('data/weather/'+file)
+		df_file = pd.read_csv('data/weather/' + file).fillna(0)
 		
 		try: 
-			df['TMAX'] = df['TMAX'] + df_file['TMAX']
+			df['TMAX'] = df['TMAX'].add(df_file['TMAX'], fill_value=0)
 			df['NUM_TMAX'] = df['NUM_TMAX'] + 1
 		except:
 			pass
 		try: 
-			df['TMIN'] = df['TMIN'] + df_file['TMIN']
+			df['TMIN'] = df['TMIN'].add(df_file['TMIN'], fill_value=0)
 			df['NUM_TMIN'] = df['NUM_TMIN'] + 1
 		except: 
 			pass
 		try:
-			df['AWND'] = df['AWND'] + df_file['AWND']
+			df['AWND'] = df['AWND'].add(df_file['AWND'], fill_value=0)
 			df['NUM_AWND'] = df['NUM_AWND'] + 1
 		except: 
 			pass
-
 		try: 
-			df['PRCP'] = df['PRCP'] + df_file['PRCP']
+			df['PRCP'] = df['PRCP'].add(df_file['PRCP'], fill_value=0)
 			df['NUM_PRCP'] = df['NUM_PRCP'] + 1
 		except:
 			pass
 
+
 	# Average out 
-	df['TMAX'] = int(df['TMAX']/df['NUM_TMAX'])
-	df['TMIN'] = int(df['TMIN']/df['NUM_TMIN'])
-	df['AWND'] = int(df['AWND']/df['NUM_AWND'])
-	df['PRCP'] = int(qdf['PRCP']/df['NUM_PRCP'])
+	df['TMAX'] = df['TMAX']/df['NUM_TMAX']
+	df['TMIN'] = df['TMIN']/df['NUM_TMIN']
+	df['AWND'] = df['AWND']/df['NUM_AWND']
+	df['PRCP'] = df['PRCP']/df['NUM_PRCP']
 				
 	df.to_csv('USA.csv', index=None)
-
+	
 	return df
 
 def combine_weather():
@@ -100,7 +102,7 @@ def combine_weather():
 	flt_2007 = flt_2007.ix[1:]
 	'''
 	
-	flt_2007 = pd.read_csv('data/2007.csv')
+	flt_2007 = pd.read_csv('data/2007_shortened.csv')
 	
 	print 'Got Year 2007 Flight Data'
 	
@@ -111,9 +113,10 @@ def combine_weather():
 	flt_2007['wind'] = np.nan
 	flt_2007['precipitation'] = np.nan
 	
+	flt_2007['CancellationCode'].fillna(0)
+	
 	print 'Combining Weather'
 	for index, row in flt_2007.iterrows():
-		print index
 	
 		flight_date = date(int(float(row.Year)), int(float(row.Month)), int(float(row.DayofMonth)))
 		diff = (flight_date-start_date).days
@@ -121,20 +124,31 @@ def combine_weather():
 		filename = row.Origin + '.csv'
 		
 		line = linecache.getline('data/weather/' + filename, diff+2) # 2 because file count starts on line 1 and first line is header
-		if line is '':
+		header_line = linecache.getline('data/weather/' + filename, 1).upper()
+		if line is '':			# i.e. file does not exist
 			line = linecache.getline('USA.csv', diff+2) # 2 because file count starts on line 1 and first line is header
+			header_line = linecache.getline('USA.csv', 1)
 			
+		header_line_array = header_line.split(',')
 		line_array = line.split(',')
 		
-		print line_array
+		precipitation_index = header_line_array.index('PRCP')
+		tmax_index = header_line_array.index('TMIN')
+		tmin_index = header_line_array.index('TMIN')
+		wind_index = header_line_array.index('AWND')
 		
-		precipitation = int(float(line_array[3]))
-		tmax = int(float(line_array[5]))
-		tmin = int(float(line_array[6]))
-		wind = int(float(line_array[7]))	
+		precipitation = int(float(line_array[precipitation_index]))
+		tmax = int(float(line_array[tmax_index]))
+		tmin = int(float(line_array[tmin_index]))
+		wind = int(float(line_array[wind_index]))	
 
-	flt_2007.to_csv('2007_weather.csv')
+		flt_2007 = flt_2007.set_value(index, 'precipitation', precipitation)
+		flt_2007 = flt_2007.set_value(index, 'tmax', tmax)
+		flt_2007 = flt_2007.set_value(index, 'tmin', tmin)
+		flt_2007 = flt_2007.set_value(index, 'wind', wind)
+
+	flt_2007.to_csv('2007_weather.csv', index=None)
 	
 if __name__ == "__main__":
-	#pass
+	#df = mean_weather_data()
 	combine_weather()

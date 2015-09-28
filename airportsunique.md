@@ -6,7 +6,7 @@ i.e. Airport IATA Code: ORD
 
 Weather Station Call Sign: KORD
 
-Unique Airports: 
+Unique Airports for Year 2007: 
 	['Origin' 'SMF' 'SNA' 'STL' 'TPA' 'TUL' 'TUS' 'ABQ' 'ALB' 'AMA' 'AUS' 'BDL'
  'BHM' 'BNA' 'BOI' 'BUF' 'BUR' 'BWI' 'CLE' 'CMH' 'CRP' 'DAL' 'DEN' 'DTW'
  'ELP' 'FLL' 'GEG' 'HOU' 'HRL' 'IAD' 'IND' 'ISP' 'JAN' 'JAX' 'LAS' 'LAX'
@@ -33,3 +33,5 @@ Unique Airports:
  'SCC' 'BRW' 'WRG' 'PSG' 'YAK' 'CDV' 'AKN' 'ADK' 'DLG' 'BQN' 'PSE' 'MTH'
  'EAU' 'HHH' 'SOP' 'LWB' 'GLH' 'MKC' 'PMD' 'EWN' 'ACK' 'WYS' 'YKM' 'SLE'
  'INL' 'BJI' 'GST' 'ROW' 'PIR']
+ 
+ [Airports to call sign mapping](http://stat-computing.org/dataexpo/2009/airports.csv)
