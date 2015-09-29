@@ -13,14 +13,14 @@ from sklearn.ensemble import GradientBoostingRegressor
 
 # US Office of Personelle Management holidays
 holidays = [
-        date(2007, 1, 1), date(2007, 1, 15), date(2007, 2, 19), date(2007, 5, 28), date(2007, 6, 7), date(2007, 7, 4), \
-        date(2007, 9, 3), date(2007, 10, 8), date(2007, 11, 11), date(2007, 11, 22), date(2007, 12, 25), \
-        date(2008, 1, 1), date(2008, 1, 21), date(2008, 2, 18), date(2008, 5, 22), date(2008, 5, 26), date(2008, 7, 4), \
-        date(2008, 9, 1), date(2008, 10, 13), date(2008, 11, 11), date(2008, 11, 27), date(2008, 12, 25) \
+        datetime(2007, 1, 1), datetime(2007, 1, 15), datetime(2007, 2, 19), datetime(2007, 5, 28), datetime(2007, 6, 7), datetime(2007, 7, 4), \
+        datetime(2007, 9, 3), datetime(2007, 10, 8), datetime(2007, 11, 11), datetime(2007, 11, 22), datetime(2007, 12, 25), \
+        datetime(2008, 1, 1), datetime(2008, 1, 21), datetime(2008, 2, 18), datetime(2008, 5, 22), datetime(2008, 5, 26), datetime(2008, 7, 4), \
+        datetime(2008, 9, 1), datetime(2008, 10, 13), datetime(2008, 11, 11), datetime(2008, 11, 27), datetime(2008, 12, 25) \
      ]
 
-def days_from_nearest_holiday(year, month, day):
-  d = date(year, month, day)
+def days_from_nearest_holiday(d):
+  d = np.datetime64(d).astype(datetime)
   x = [(abs(d-h)).days for h in holidays]
   return min(x)
 
@@ -32,13 +32,15 @@ num_k_neighbours = window_size / 2
 
 df = pd.read_csv('data/2007.csv')
 
-#df['TestDate'] = pd.to_datetime(df.Year*10000 + df.Month*100 + df.DayofMonth + int(str(df['CRSDepTime'])[:2]) + int(str(df['CRSDepTime'])[2:]), format='%Y%m%d %H%m')
-
 # TODO: Preprocess with hour/ minute 
 # TODO: Include weather data
 
-df['Date'] = pd.to_datetime(df.Year*10000 + df.Month*100 + df.DayofMonth, format='%Y%m%d')
-df = df.drop(['Year', 'Month', 'DayofMonth'], axis=1)		# Because we combined them already
+#df['Date'] = pd.to_datetime(df.Year*10000 + df.Month*100 + df.DayofMonth, format='%Y%m%d')
+df['DepHour'] = df['CRSDepTime'].apply(lambda x: int(str(x).zfill(4)[:2]))
+df['DepMin'] = df['CRSDepTime'].apply(lambda x: int(str(x).zfill(4)[2:]))
+df['DateTime'] = df[['Year', 'Month', 'DayofMonth', 'DepHour', 'DepMin']].apply(lambda s : datetime(*s), axis = 1)
+
+df['DaysFromHoliday'] = df['Date'].apply(days_from_nearest_holiday)
 df = df.sort('Date')
 df = df.reset_index()
 df['PredDelay'] = np.NaN		# To fill up as predicted
