@@ -102,7 +102,7 @@ def combine_weather():
 	flt_2007 = flt_2007.ix[1:]
 	'''
 	
-	flt_2007 = pd.read_csv('data/2007_shortened.csv')
+	flt_2007 = pd.read_csv('data/2007.csv')
 	
 	print 'Got Year 2007 Flight Data'
 	
@@ -123,24 +123,46 @@ def combine_weather():
 		
 		filename = row.Origin + '.csv'
 		
-		line = linecache.getline('data/weather/' + filename, diff+2) # 2 because file count starts on line 1 and first line is header
+		line = linecache.getline('data/weather/' + filename, diff+2).strip() # 2 because file count starts on line 1 and first line is header
 		header_line = linecache.getline('data/weather/' + filename, 1).upper()
+		
+		usa_line = linecache.getline('USA.csv', diff+2).strip()
+		usa_header_line = linecache.getline('USA.csv', 1).upper().strip()		
+		
 		if line is '':			# i.e. file does not exist
-			line = linecache.getline('USA.csv', diff+2) # 2 because file count starts on line 1 and first line is header
-			header_line = linecache.getline('USA.csv', 1)
+			line = usa_line
+			header_line = usa_header_line
 			
 		header_line_array = header_line.split(',')
 		line_array = line.split(',')
 		
-		precipitation_index = header_line_array.index('PRCP')
-		tmax_index = header_line_array.index('TMIN')
-		tmin_index = header_line_array.index('TMIN')
-		wind_index = header_line_array.index('AWND')
+		usa_header_line_array = usa_header_line.split(',')
+		usa_line_array = usa_line.split(',')
 		
-		precipitation = int(float(line_array[precipitation_index]))
-		tmax = int(float(line_array[tmax_index]))
-		tmin = int(float(line_array[tmin_index]))
-		wind = int(float(line_array[wind_index]))	
+		try: 
+			precipitation_index = header_line_array.index('PRCP')
+			precipitation = int(float(line_array[precipitation_index]))
+		except:
+			precipitation_index = usa_header_line_array.index('PRCP')
+			precipitation = int(float(usa_line_array[precipitation_index]))
+		try:
+			tmax_index = header_line_array.index('TMIN')
+			tmax = int(float(line_array[tmax_index]))
+		except:
+			tmax_index = usa_header_line_array.index('TMIN')
+			tmax = int(float(usa_line_array[tmax_index]))
+		try:
+			tmin_index = header_line_array.index('TMIN')
+			tmin = int(float(line_array[tmin_index]))
+		except:
+			tmin_index = usa_header_line_array.index('TMIN')
+			tmin = int(float(usa_line_array[tmin_index]))
+		try:
+			wind_index = header_line_array.index('AWND')
+			wind = int(float(line_array[wind_index]))				
+		except:
+			wind_index = usa_header_line_array.index('AWND')
+			wind = int(float(usa_line_array[wind_index]))	
 
 		flt_2007 = flt_2007.set_value(index, 'precipitation', precipitation)
 		flt_2007 = flt_2007.set_value(index, 'tmax', tmax)
