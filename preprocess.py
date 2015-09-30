@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 '''
-This class preprocesses the dataframe
+This file preprocesses the dataframe
 1. Combine Year, Month, DayofMonth, CRSDepTime (The scheduled departure time)
 into a datetime object
 2. Add all the delays together to get Total Delay 
@@ -13,6 +13,8 @@ into a datetime object
 8. Cancellation Code if does not exist, force it to be 999 
 Cannot have NaN for the Machine Learning
 9. Sort dataframe by date
+10. Generate list of attributes, removing DateTime and PredDelay as
+not needed in regressors (Note: DO change it if you think it's needed!)
 '''
 
 import pandas as pd
@@ -72,4 +74,9 @@ def preprocess(df):
 	df = df.sort('DateTime')
 	df = df.reset_index()	# To fill up as being predicted
 	
-	return df
+	# (10)
+	attributes = list(df.columns.values)[1:]
+	attributes.remove('DateTime')
+	attributes.remove('PredDelay')
+		
+	return (df, attributes)
