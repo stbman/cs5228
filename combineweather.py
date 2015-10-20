@@ -146,14 +146,22 @@ def combine_weather():
 			precipitation_index = usa_header_line_array.index('PRCP')
 			precipitation = int(float(usa_line_array[precipitation_index]))
 		try:
-			tmax_index = header_line_array.index('TMIN')
+			tmax_index = header_line_array.index('TMAX')
 			tmax = int(float(line_array[tmax_index]))
+			if tmax == -9999.0:
+				tmax_index = usa_header_line_array.index('TMAX')
+				tmax = int(float(usa_line_array[tmax_index]))	
+				print "Wa low value" , tmax
 		except:
-			tmax_index = usa_header_line_array.index('TMIN')
+			tmax_index = usa_header_line_array.index('TMAX')
 			tmax = int(float(usa_line_array[tmax_index]))
 		try:
 			tmin_index = header_line_array.index('TMIN')
 			tmin = int(float(line_array[tmin_index]))
+			if tmin == -9999.0:
+				tmin_index = usa_header_line_array.index('TMIN')
+				tmin = int(float(usa_line_array[tmin_index]))	
+				print "Wa low value" , tmin			
 		except:
 			tmin_index = usa_header_line_array.index('TMIN')
 			tmin = int(float(usa_line_array[tmin_index]))
@@ -168,6 +176,7 @@ def combine_weather():
 		flt_2007 = flt_2007.set_value(index, 'tmax', tmax)
 		flt_2007 = flt_2007.set_value(index, 'tmin', tmin)
 		flt_2007 = flt_2007.set_value(index, 'wind', wind)
+		print tmax, " ", tmin
 
 	flt_2007.to_csv('2007_weather.csv', index=None)
 	

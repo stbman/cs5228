@@ -59,7 +59,7 @@ def preprocess(df):
 	df['IsDelayed'] = df['TotalDelay'].apply(lambda x: 1 if x > 0 else 0)
 	
 	# (6)
-	#df['PredDelay'] = np.NaN
+	df['PredDelay'] = np.NaN
 	
 	# (7)
 	for col in nominal_cols:
@@ -72,7 +72,9 @@ def preprocess(df):
 	
 	# (9)
 	df = df.sort('DateTime')
-	df = df.reset_index()	# To fill up as being predicted
+	df = df.reset_index()	
+	df = pd.DataFrame(df)
+	df = df.drop(['index'], axis=1)
 	
 	# (10)
 	attributes = list(df.columns.values)[1:]
@@ -83,5 +85,5 @@ def preprocess(df):
 	
 if __name__ == "__main__":
 	df = pd.read_csv('data/2007_weather.csv')
-	df = preprocess(df)
+	df, attributes = preprocess(df)
 	df.to_csv('data/2007_weather_preprocess.csv', index=None)
