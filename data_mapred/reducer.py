@@ -11,15 +11,12 @@ df = pd.DataFrame(columns=['actual', 'predicted'])
 
 for line in sys.stdin:
     predicted, actual = line.strip().split(" ")
-    df = df.append({'actual': actual, 'predicted': predicted}, ignore_index=True)
+    df = df.append({'actual': float(actual), 'predicted': float(predicted)}, ignore_index=True)
 
 rmse = np.sqrt(mean_squared_error(df['actual'], df['predicted']))
 
 df['actualBoolean']    = df['actual'].map(lambda x: 1 if x > 15 else 0)    
 df['predictedBoolean'] = df['predicted'].map(lambda x: 1 if x > 15 else 0)    
-
-#print df
-
 
 prec_recall_score   = precision_recall_fscore_support(df['actualBoolean'], df['predictedBoolean'])
 prec_delayed        = prec_recall_score[0][1]
