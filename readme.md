@@ -14,3 +14,4 @@ Put the data in a data/ folder
 * http://www.datasciencecentral.com/profiles/blogs/predicting-flights-delay-using-supervised-learning
 * http://cs229.stanford.edu/proj2012/CastilloLawson-PredictingFlightDelays.pdf
 * https://www.google.com.sg/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=airline+data+mining&start=10
+* More Airline On Time data: http://apps.bts.gov/xml/ontimesummarystatistics/src/index.xml

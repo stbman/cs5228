@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import GradientBoostingRegressor
 
-file_name = '2007_weather_short.csv'
+file_name = '2007_weather_preprocess.csv'
 window = 50
 k = window/2    # Thought windows should be of a ratio
 
@@ -17,7 +17,6 @@ knn = KNeighborsClassifier(n_neighbors=k)
 # To change classifiers 
 gbr = GradientBoostingRegressor(n_estimators=20, learning_rate=0.1,
                       max_depth=1, random_state=0, loss='ls')
-import numpy as np
 
 for chunk in iter_csv:
     chunk = chunk.drop(['DateTime'], axis=1)
@@ -41,6 +40,7 @@ for chunk in iter_csv:
     prediction = gbr.predict(predict_chunk)[0]
     
     print prediction, actual
+   
 
 
 
