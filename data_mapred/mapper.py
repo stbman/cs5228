@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import sys
+
 import pandas as pd 
 import numpy as np
 
@@ -7,7 +9,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.ensemble import GradientBoostingRegressor
 
 file_name = '2007_weather_preprocess.csv'
-window = 50
+window = int(sys.argv[1])   
 k = window/2    # Thought windows should be of a ratio
 
 iter_csv = pd.read_csv(file_name, iterator=True, chunksize=window)
