@@ -19,13 +19,25 @@ rmse = np.sqrt(mean_squared_error(df['actual'], df['predicted']))
 df['actualBoolean']    = df['actual'].map(lambda x: 1 if x > 15 else 0)    
 df['predictedBoolean'] = df['predicted'].map(lambda x: 1 if x > 15 else 0)    
 
+isTwoClass          = True
 prec_recall_score   = precision_recall_fscore_support(df['actualBoolean'], df['predictedBoolean'])
 num_corr_0          = prec_recall_score[3][0]
-num_corr_1          = prec_recall_score[3][1]
+try:
+    num_corr_1      = prec_recall_score[3][1]
+except:
+    num_corr_1      = 0
+    isTwoClass      = False
 num_corr_total      = num_corr_0 + num_corr_1
-prec                = (prec_recall_score[0][0] * num_corr_0 + prec_recall_score[0][1] * num_corr_1) / num_corr_total
-recall              = (prec_recall_score[1][0] * num_corr_0 + prec_recall_score[1][1] * num_corr_1) / num_corr_total
-fscore              = (prec_recall_score[2][0] * num_corr_0 + prec_recall_score[2][1] * num_corr_1) / num_corr_total
+
+if isTwoClass:
+    prec                = (prec_recall_score[0][0] * num_corr_0 + prec_recall_score[0][1] * num_corr_1) / num_corr_total
+    recall              = (prec_recall_score[1][0] * num_corr_0 + prec_recall_score[1][1] * num_corr_1) / num_corr_total
+    fscore              = (prec_recall_score[2][0] * num_corr_0 + prec_recall_score[2][1] * num_corr_1) / num_corr_total
+else:
+    prec                = (prec_recall_score[0][0] * num_corr_0) / num_corr_total
+    recall              = (prec_recall_score[1][0] * num_corr_0) / num_corr_total
+    fscore              = (prec_recall_score[2][0] * num_corr_0) / num_corr_total   
+
 
 #print classification_report(df['actualBoolean'], df['predictedBoolean'])
 print rmse, prec, recall, fscore
