@@ -50,7 +50,8 @@ def preprocess(df):
 	# (3)
 	df = df.drop(['Year', 'Month', 'DayofMonth', 'DepHour', 'DepMin', \
 					'ArrDelay', 'DepDelay', 'CarrierDelay', 'WeatherDelay', \
-					'NASDelay', 'SecurityDelay', 'LateAircraftDelay'], axis=1)
+					'NASDelay', 'SecurityDelay', 'LateAircraftDelay',
+					'OriginLat', 'OriginLong', 'DestLat', 'DestLong'], axis=1)
 	
 	# (4)
 	df['DaysFromHoliday'] = df['DateTime'].apply(days_from_nearest_holiday)
