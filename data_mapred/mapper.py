@@ -39,8 +39,11 @@ for chunk in iter_csv:
     # Other classifiers
     new_training_chunk = training_chunk.ix[neighbours]
 
-    gbr.fit(new_training_chunk[attributes], new_training_chunk['TotalDelay'])
-    prediction = gbr.predict(predict_chunk)[0]
+    try:
+        gbr.fit(new_training_chunk[attributes], new_training_chunk['TotalDelay'])
+        prediction = gbr.predict(predict_chunk)[0]
+    except:
+        prediction = new_training_chunk['TotalDelay'].mean()
     
     print prediction, actual
    
