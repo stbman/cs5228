@@ -163,13 +163,13 @@ The Tables \ref{table:k/2} and \ref{table:k/3} shows the average precision, reca
 \begin{tabular}{ | l | l | l | l | l | l | l |}
   \hline
    & \textbf{GBR}& \textbf{ADR} & \textbf{SVM} & \textbf{Tree} & \textbf{BNN}\\ \hline
-  \textbf{Precision} & stuff & & & Test & \\  \hline
-  \textbf{Recall} & stuff & & & Test & \\  \hline
-  \textbf{F-Score} & stuff & & & Test & \\  
+  \textbf{Precision} & 0.82 & 0.24 & & 0.83 & 0.45\\  \hline
+  \textbf{Recall} & 0.66 & 0.29 & & 0.81 & 0.50\\  \hline
+  \textbf{F-Score} & 0.69 & 0.20 & & 0.80 & 0.45\\  
   \hline
 \end{tabular}
 \label{table:k/2}
-\caption{Average scores in percentage for $k=n/2$}
+\caption{Average scores for $k=n/2$}
 \end{table}
 \end{centering}
 
@@ -178,28 +178,35 @@ The Tables \ref{table:k/2} and \ref{table:k/3} shows the average precision, reca
 \begin{tabular}{ | l | l | l | l | l | l | l |}
   \hline
    & \textbf{GBR}& \textbf{ADR} & \textbf{SVM} & \textbf{Tree} & \textbf{BNN}\\ \hline
-  \textbf{Precision} & stuff & & & Test & \\  \hline
-  \textbf{Recall} & stuff & & & Test & \\  \hline
-  \textbf{F-Score} & stuff & & & Test & \\  
+  \textbf{Precision} & stuff & 0.25 & & Test & \\  \hline
+  \textbf{Recall} & stuff & 0.27 & & Test & \\  \hline
+  \textbf{F-Score} & stuff & 0.16 & & Test & \\  
   \hline
 \end{tabular}
 \label{table:k/3}
-\caption{Average scores in percentage for $k=n/3$}  
+\caption{Average scores for $k=n/3$}  
 \end{table}
 \end{centering}
 
-\section{Discussion} 
+\subsection{Effect of Different Algorithms}
+Tree-based classifiers such as Decision Tree Classifier, Ada Boosted Regressor and Gradient Boosted Regressor classified the data very quickly. Running for one window size through the entire dataset took around 30 minutes. For one full run of varying window size with a fixed proportion of $k$ neighbours, these classifiers took 8 hours to two days to classify the data. Classifiers such as SVM and Neural Networks have been known not to scale very well to this large dataset, and they took more than four days for one full iteration. 
 
-Tree-based classifiers such as Decision Tree Classifier, Ada Boosted Regressor and Gradient Boosted Regressor worked very well and classified the data very quickly. Running for one window size through the entire dataset took around 30 minutes. For one full run of varying window size with a fixed proportion of $k$ neighbours, these classifiers took 8 hours to two days to classify the data. Classifiers such as SVM and Neural Networks have been known not to scale very well to this large dataset, and they took more than four days for one full iteration. 
+A simple decision tree classifier performed best, yielding 83\% precision and 80\% recall, followed by the gradient boosted regressor. The Ada Boost performed worst with a precision of 24\% and the neural network also fell below 24\%. 
 
-% Effect of window sizes
+\subsection{Effect of Window Sizes}
+In general, the smaller the window size yielded better results. This shows that the most recent flight data is most useful in predicting whether the query flight will be delayed. Hence, programs and sites which do flight delay prediction may reduce space complexity by not needing to store too many flights. 
 
-% Effect of k
+\subsection{Effect of k}
 
-In general, most classifiers reported results of about 85\% precision. This shows that the algorithm chosen has lesser importance as compared to the feature selection. To achieve good prediction results with this dataset, we need to pick out the salient features for classification. As compared to the literature where no additional data is merged into the flight data, our method achieved a performance of 10-20\% of higher accuracy. The additional features of weather and distances are useful in determining the possibility of delay of the flight. Our results are on par with commercial flights delay sites and literature. 
+\subsection{Feature Selection} 
+At best, the classifiers reported results of about 83\% precision. This shows that the algorithm chosen has lesser importance as compared to the feature selection. To achieve good prediction results with this dataset, we need to pick out the salient features for classification. We tested a dataset without distance data with the Gradient Boosted Regressor, and the dataset had slightly lower precision of 80\% as compared to 82\% with distance as a feature. This shows that the distances of flights do make a difference in prediction of delays. 
+
+As compared to the literature where no additional data is merged into the flight data, our method achieved a performance of 10\% better precision. The additional features of weather and distances are useful in determining the possibility of delay of the flight. Our results are on par with commercial flights delay sites and literature. 
 
 \section{Further Work}
-Much can be done to explore the effect of varying window size with the accuracy of predicting flight delays: different sizes of $k$, different classifiers, different classifier parameters, and even different window size and window increment sizes. One might want to look into kernel methods that scale for using kernel-based classifiers such as SVM for classifying such a huge dataset. 
+Much can be done to explore the effect of varying window size with the accuracy of predicting flight delays: different sizes of $k$, constant $k$ with varying window size, different classifiers, different classifier parameters, and even different window size and window increment sizes. One might want to look into kernel methods that scale for using kernel-based classifiers such as SVM for classifying such a huge dataset. 
+
+One can also explore which features are most useful in flight delay prediction. This would be done using logistic regression of each feature versus the delay vector. However, logistic regression on such a scale is very slow. An experiment that we ran involved a logistic regression of maximum temperature vs number of minutes of delay, which fitting the data to the logistic regressor took more than a day, and the reported correlation value was only about 0.2. 
 
 One can also explore using a larger dataset, or even the full dataset of flights from 1987 to 2008 with weather data. However, NOAA only provides weather data from 1900 onwards, so one has to disregard weather data from Years 1987 to 1900. To do such an experiment, one needs to come up with a more efficient way of scaling the experiment, by using our map-reduce architecture or otherwise, so that computation is faster. 
 
