@@ -5,6 +5,7 @@
 \usepackage{courier}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{amssymb, amsmath}
 \begin{document}
 
 \title{Predicting Flight Delays with LAMP and a Sliding Window}
@@ -46,8 +47,8 @@ We combine the data with weather data from NOAA (National Oceanic and Atmospheri
 \begin{figure}[htb]
 \centering
 \includegraphics[height=0.6\linewidth]{weatherdata.png}
-\caption{Fields in the Flight Data}
-\label{fig:flightdata}
+\caption{Fields in the Weather Data}
+\label{fig:weatherdata}
 \end{figure}
 
 We also add data about the distances between the origin and destination airports, calculated from the latitude and longitude of the airports. 
@@ -115,7 +116,16 @@ We perform a sliding window classification for this time-series data. We iterate
 \subsubsection{Combining weather and distance data}
 The first step of the preprocessing pipeline is to combine the raw flight data with weather data. The weather data is obtained from NOAA in a summary of meteorological data obtained from the airport weather station. The average meteorological data of each day over the Years 2007 and 2008 is obtained and merged with the flight data. There are two main problems in these datasets which require some data clean-up: missing data and inaccurate data. Some airports do not have weather stations or may not report a certain data field, which results in missing data. In the case where data from other airports in the state are present, we use the mean of the state. Where the mean of the state is not available, we use the mean of all the airports in USA. In cases where we can intelligently guess, we will fill in the data fields with our external knowledge. For example, McCarran International Airport (LAS) does not report precipitation data. As we know LAS is situated in Las Vegas which is a very dry state, we fill in the precipitation as 0 mm, since the place is generally known to be desert-like. On inaccurate data, we will remove the data field and attempt to fill it up as per missing data, i.e. mean of state. Santa Barbara Airport (SBA) has no temperature readings but reported maximum and minimum temperatures as -9999.0. This messes up the dataset and is therefore removed. 
 
-After this, we combine the flight data with the data on the distances between the origin and destination airports. We obtain the latitude and longitude coordinates of the two airports and perform a calculation, factoring in the radius of the Earth, to find the flight distance. We believe flight distance do affect the length of flight delays, because in general, insurance companies give greater financial compensation for long-haul flights than shorter flights for the same amount of delay.
+After this, we combine the flight data with the data on the distances between the origin and destination airports. We obtain the latitude and longitude coordinates of the two airports and estimate the flight distance using the haversine formula, factoring in the radius of the Earth (est. 6373km).
+
+\begin{multline}
+\scriptstyle \text{haversin}(\theta)=\sin^2\left(\frac\theta2\right)=\frac{1-\cos(\theta)}2, \\
+\scriptstyle d=2r\sin^{-1}\left(\sqrt{\text{haversin}(\phi_2-\phi_1)+\cos(\phi_1)\cos(\phi_2)\text{haversin}(\lambda_2-\lambda_1)}\right)
+\end{multline}
+
+Where $\phi_1, \phi_2$ is the latitude of points 1 and 2, $\lambda_1, \lambda_2$ for the longitude of points 1 and 2, $r$ radius of the sphere and $d$ the distance that we want to find.
+
+We believe flight distance do affect the length of flight delays, because in general, insurance companies give greater financial compensation for long-haul flights than shorter flights for the same amount of delay.
 %Add in zijing's equation or something
 
 \subsubsection{Feature selection}
