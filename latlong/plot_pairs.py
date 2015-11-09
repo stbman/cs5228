@@ -42,7 +42,7 @@ for i in range( len( df_flight_paths ) ):
     )
 
 layout = dict(
-        title = 'Feb. 2011 American Airline flight paths<br>(Hover for airport names)',
+        title = '2007 American Airline flight paths',
         showlegend = False,
         geo = dict(
             scope='north america',

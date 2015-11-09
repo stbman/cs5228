@@ -10,11 +10,11 @@
 \title{Predicting Flight Delays with LAMP and a Sliding Window}
 \author{\\Adrian Lim A0123432W \\
 Ng Hui Xian Lynnette A0119646X \\
-Toh ZiJing A }
+Toh ZiJing A0123506R }
 \maketitle
 \begin{abstract}
 \begin{quote}
-Have you ever been stuck in an airport because your flight was delayed or cancelled and wondered if you could have predicted it if you'd had more data? In this project, we used 7.5 million entries worth of commercial flight data within USA to answer the following question: Given a current flight's data and the past few days of flight data, can you predict if the flight will be delayed? The 1.04 GB of flight data is obtained from RITA, and combined with meteorological data from NOAA as well as latitude and longitude data. As per the RITA definition of delay, a flight is considered to be delayed if it is more than 15 minutes late. This project explores using different window sizes as the number of previous days of training data to predict a query flight. It extracts k-nearest-neighbours from the training data, where $k$ is a fraction of $n$ records of training data, before performing various classifiers on the new dataframe. Using the map-reduce architecture, this project parallizes computation with multiple mappers computing the classification label of IsDelayed and one reducer aggregating the results to formulate the precision and recall score for the parameters $n$, $k$ and the classifier.
+Have you ever been stuck in an airport because your flight was delayed or cancelled and wondered if you could have predicted it if you'd had more data? In this project, we used 7.5 million entries worth of commercial flight data within USA to answer the following question: Given a current flight's data and the past few days of flight data, can you predict if the flight will be delayed? The 1.04 GB of flight data is obtained from RITA, and combined with meteorological data from NOAA as well as latitude and longitude data. As per the RITA definition of delay, a flight is considered to be delayed ifs it is more than 15 minutes late. This project explores using different window sizes as the number of previous days of training data to predict a query flight. It extracts k-nearest-neighbours from the training data, where $k$ is a fraction of $n$ records of training data, before performing various classifiers on the new dataframe. Using the map-reduce architecture, this project parallizes computation with multiple mappers computing the classification label of IsDelayed and one reducer aggregating the results to formulate the precision and recall score for the parameters $n$, $k$ and the classifier.
 \end{quote}
 \end{abstract}
 
