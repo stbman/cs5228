@@ -6,11 +6,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{amssymb, amsmath}
-
-\makeatletter
-\def\@copyrighspace{\relax}
-\makeatother
-
+\usepackage{subcaption}
 \begin{document}
 
 \title{Predicting Flight Delays with LAMP and a Sliding Window}
@@ -20,7 +16,7 @@ Toh ZiJing A0123506R }
 \maketitle
 \begin{abstract}
 \begin{quote}
-Have you ever been stuck in an airport because your flight was delayed or cancelled and wondered if you could have predicted it if you'd had more data? In this project, we used 7.5 million entries worth of commercial flight data within USA to answer the following question: Given a current flight's data and the past few days of flight data, can you predict if the flight will be delayed? The 1.04 GB of flight data is obtained from RITA, and combined with meteorological data from NOAA as well as latitude and longitude data. As per the RITA definition of delay, a flight is considered to be delayed ifs it is more than 15 minutes late. This project explores using different window sizes as the number of previous days of training data to predict a query flight. It extracts k-nearest-neighbours from the training data, where $k$ is a fraction of $n$ records of training data, before performing various classifiers on the new dataframe. Using the map-reduce architecture, this project parallizes computation with multiple mappers computing the classification label of IsDelayed and one reducer aggregating the results to formulate the precision and recall score for the parameters $n$, $k$ and the classifier.
+Have you ever been stuck in an airport because your flight was delayed or cancelled and wondered if you could have predicted it if you'd had more data? In this project, we used 7.5 million entries worth of commercial flight data within USA to answer the following question: Given a current flight's data and the past few days of flight data, can you predict if the flight will be delayed? The 1.04 GB of flight data is obtained from RITA, and combined with meteorological data from NOAA as well as latitude and longitude data. As per the RITA definition of delay, a flight is considered to be delayed ifs it is more than 15 minutes late. This project explores using different window sizes as the number of previous days of training data to predict a query flight. It extracts k-nearest-neighbours from the training data, where $k$ is a fraction of $n$ records of training data, before performing various classifiers on the new dataframe. Using the map-reduce architecture, this project parallizes computation with multiple mappers computing the classification label of IsDelayed and one reducer aggregating the results to formulate the precision and recall score for the parameters $n$, $k$ and the classifier. It reports a precision of 90\% at best with a gradient boosted regressor and $k=n/3$
 \end{quote}
 \end{abstract}
 
@@ -157,18 +153,64 @@ We varied the number of nearest neighbours, $k$ as a fraction of $n$. For each $
 
 For the algorithms, we used Gradient Boosted Regressor (GBR), Ada Boost with Decision Tree Regressor, (ADR) Support Vector Machines (SVM), Decision Trees (Tree) and Bernoulli Neural Networks (BNN), with their default parameters. 
 
-% Add some graphs
-
 The Tables \ref{table:k/2} and \ref{table:k/3} shows the average precision, recall and f-score for each algorithm ran. 
 
+% Add some graphs
+\begin{figure}
+\centering
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/adr2.png}
+  \label{fig:adr2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/adr3.png}
+  \label{fig:adr3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/bnn2.png}
+  \label{fig:bnn2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/bnn3.png}
+  \label{fig:bnn3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/gbr2.png}
+  \label{fig:gbr2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/gbr3.png}
+  \label{fig:gbr3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/svm2.png}
+  \label{fig:svm2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/svm2.png}
+  \label{fig:svm3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/tree2.png}
+  \label{fig:gbr2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/truncated/tree3.png}
+  \label{fig:tree3}
+\end{minipage}
+\caption{Scores for regressors with different window sizes.}
+\label{fig:adr}
+\end{figure}
+
+% score table
 \begin{centering}
 \begin{table}
 \begin{tabular}{ | l | l | l | l | l | l | l |}
   \hline
    & \textbf{GBR}& \textbf{ADR} & \textbf{SVM} & \textbf{Tree} & \textbf{BNN}\\ \hline
-  \textbf{Precision} & 0.82 & 0.24 & & 0.83 & 0.45\\  \hline
-  \textbf{Recall} & 0.66 & 0.29 & & 0.81 & 0.50\\  \hline
-  \textbf{F-Score} & 0.69 & 0.20 & & 0.80 & 0.45\\  
+  \textbf{Precision} & 0.82 & 0.24 & 0.59 & 0.83 & 0.45\\  \hline
+  \textbf{Recall} & 0.66 & 0.29 & 0.59 & 0.81 & 0.50\\  \hline
+  \textbf{F-Score} & 0.69 & 0.20 & 0.57 & 0.80 & 0.45\\  
   \hline
 \end{tabular}
 \label{table:k/2}
@@ -181,9 +223,9 @@ The Tables \ref{table:k/2} and \ref{table:k/3} shows the average precision, reca
 \begin{tabular}{ | l | l | l | l | l | l | l |}
   \hline
    & \textbf{GBR}& \textbf{ADR} & \textbf{SVM} & \textbf{Tree} & \textbf{BNN}\\ \hline
-  \textbf{Precision} & stuff & 0.25 & & Test & \\  \hline
-  \textbf{Recall} & stuff & 0.27 & & Test & \\  \hline
-  \textbf{F-Score} & stuff & 0.16 & & Test & \\  
+  \textbf{Precision} & 0.90 & 0.25 & & 0.78 & 0.62 \\  \hline
+  \textbf{Recall} & 0.79 & 0.27 & & 0.75 & 0.59 \\  \hline
+  \textbf{F-Score} & 0.81 & 0.16 & & 0.75 & 0.58 \\  
   \hline
 \end{tabular}
 \label{table:k/3}
@@ -194,15 +236,16 @@ The Tables \ref{table:k/2} and \ref{table:k/3} shows the average precision, reca
 \subsection{Effect of Different Algorithms}
 Tree-based classifiers such as Decision Tree Classifier, Ada Boosted Regressor and Gradient Boosted Regressor classified the data very quickly. Running for one window size through the entire dataset took around 30 minutes. For one full run of varying window size with a fixed proportion of $k$ neighbours, these classifiers took 8 hours to two days to classify the data. Classifiers such as SVM and Neural Networks have been known not to scale very well to this large dataset, and they took more than six days for one full iteration. 
 
-A simple decision tree classifier performed best, yielding 83\% precision and 80\% recall, followed by the gradient boosted regressor. The Ada Boost performed worst with a precision of 24\% and the neural network also fell below 24\%. 
+A gradient boosted regressor performed best when $k$ is $1/3$ the window size with an average precision of 0.90, followed by a decision tree classifier. The Ada Boost performed worst with a precision of 24\% and the neural network also fell below 24\%. 
 
 \subsection{Effect of Window Sizes}
 In general, the smaller the window size yielded better results. This shows that the most recent flight data is most useful in predicting whether the query flight will be delayed. Hence, programs and sites which do flight delay prediction may reduce space complexity by not needing to store too many flights. 
 
 \subsection{Effect of k}
+From our experiments, decreasing the fraction of window size used only slightly improved the precision recall score. 
 
 \subsection{Feature Selection} 
-At best, the classifiers reported results of about 83\% precision. This shows that the algorithm chosen has lesser importance as compared to the feature selection. To achieve good prediction results with this dataset, we need to pick out the salient features for classification. We tested a dataset without distance data with the Gradient Boosted Regressor, and the dataset had slightly lower precision of 80\% as compared to 82\% with distance as a feature. This shows that the distances of flights do make a difference in prediction of delays. 
+At best, the classifiers reported results of about 90\% precision. This shows that the algorithm chosen has lesser importance as compared to the feature selection. To achieve good prediction results with this dataset, we need to pick out the salient features for classification. We tested a dataset without distance data with the Gradient Boosted Regressor, and the dataset had slightly lower precision of 80\% as compared to 82\% with distance as a feature, for $k=n/2$. This shows that the distances of flights do make a difference in prediction of delays. 
 
 As compared to the literature where no additional data is merged into the flight data, our method achieved a performance of 10\% better precision. The additional features of weather and distances are useful in determining the possibility of delay of the flight. Our results are on par with commercial flights delay sites and literature. 
 
@@ -214,7 +257,7 @@ One can also explore which features are most useful in flight delay prediction. 
 One can also explore using the full dataset of flights from 1987 to 2008 with weather data. However, NOAA only provides weather data from 1900 onwards, so one has to disregard weather data from Years 1987 to 1900. To do such an experiment, one needs to come up with a more efficient way of scaling the experiment, with a variation of our map-reduce architecture.
 
 \section{Conclusion}
-This project explored a binary classification prediction problem with data from commercial flights within America in Year 2007, consisting of 7.5 million records. The raw flight data is merged with weather data from NOAA and flight distance data calculated from the latitude and longitude of airports. Sliding window experiments were run the past $n$ flights picked out as training data for the query flight. A k-nearest-neighbours classification was done with $k=n/2$ and $k=n/3$. With several regressors and classifiers on a map-reduce architecture on the Tembusu Compute Cluster, our method reported an average precision of 83\% at best, which is on par with commercial sites and better than some literature. 
+This project explored a binary classification prediction problem with data from commercial flights within America in Year 2007, consisting of 7.5 million records. With several regressors and classifiers on a map-reduce architecture on the Tembusu Compute Cluster, our method reported an average precision of 90\% at best with a gradient boosted regressor and $k=n/3$ which is on par with commercial sites and better than some literature.
 
 \bibliography{cs5228.bib}
 \bibliographystyle{aaai}
