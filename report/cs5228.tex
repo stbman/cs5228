@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{amssymb, amsmath}
+\usepackage{subcaption}
 \begin{document}
 
 \title{Predicting Flight Delays with LAMP and a Sliding Window}
@@ -152,10 +153,56 @@ We varied the number of nearest neighbours, $k$ as a fraction of $n$. For each $
 
 For the algorithms, we used Gradient Boosted Regressor (GBR), Ada Boost with Decision Tree Regressor, (ADR) Support Vector Machines (SVM), Decision Trees (Tree) and Bernoulli Neural Networks (BNN), with their default parameters. 
 
-% Add some graphs
-
 The Tables \ref{table:k/2} and \ref{table:k/3} shows the average precision, recall and f-score for each algorithm ran. 
 
+% Add some graphs
+\begin{figure}
+\centering
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/adr2.png}
+  \label{fig:adr2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/adr3.png}
+  \label{fig:adr3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/bnn2.png}
+  \label{fig:bnn2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/bnn3.png}
+  \label{fig:bnn3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/gbr2.png}
+  \label{fig:gbr2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/gbr3.png}
+  \label{fig:gbr3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/svm2.png}
+  \label{fig:svm2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/svm2.png}
+  \label{fig:svm3}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/tree2.png}
+  \label{fig:gbr2}
+\end{minipage}
+\begin{minipage}{.45\linewidth}
+  \includegraphics[width=\linewidth]{../data_mapred/img/tree3.png}
+  \label{fig:tree3}
+\end{minipage}
+\caption{Scores for regressors with different window sizes.}
+\label{fig:adr}
+\end{figure}
+
+% score table
 \begin{centering}
 \begin{table}
 \begin{tabular}{ | l | l | l | l | l | l | l |}
