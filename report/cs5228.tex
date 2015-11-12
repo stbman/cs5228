@@ -6,6 +6,11 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{amssymb, amsmath}
+
+\makeatletter
+\def\@copyrighspace{\relax}
+\makeatother
+
 \begin{document}
 
 \title{Predicting Flight Delays with LAMP and a Sliding Window}
@@ -105,12 +110,12 @@ The raw flight data is first combined with weather data obtained from NOAA and f
 
 We perform a sliding window classification for this time-series data. We iterate through the window size $n$ from 20 000 data records, which represent the number of flight data from one day, to 5 million records, or 80\% of the dataset. Each increment consists of 1 day's worth of flight data, around 20 000 records. 
 
-\begin{figure}[htb]
+\begin{figure*}[htb]
 \centering
-\includegraphics[height=1.3\linewidth]{CS5228-final2.png}
+\includegraphics[width=0.7\linewidth]{CS5228-final.png}
 \caption{Overview of prediction pipeline}
 \label{fig:overview}
-\end{figure}
+\end{figure*}
 
 \subsection{Preprocessing}
 \subsubsection{Combining weather and distance data}
