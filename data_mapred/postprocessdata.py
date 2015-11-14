@@ -2,11 +2,8 @@
 
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
-import plotly.plotly as py 
-import plotly.graph_objs as go
 
-datafile = "./results/bnn3.txt"
+datafile = "./results/svm3.txt"
 with open(datafile) as f:
     content = f.readlines()
 content = np.array(content)
@@ -38,4 +35,5 @@ gbr3: 0.896900465667 0.790876329509 0.807299312628
 tree3: 0.784383589792 0.74913854708 0.752370106632
 svm: 0.5852486373 0.591143856881 0.577613515101
 bnn3: 0.616053471101 0.585513688994 0.582910162705
+svm3: 0.59159853981 0.599792922569 0.586745370794
 '''
