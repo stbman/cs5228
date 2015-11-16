@@ -104,7 +104,11 @@ Figure \ref{fig:overview} shows a graphical flow of our data mining pipeline.
 
 The raw flight data is first combined with weather data obtained from NOAA and flight distances calculated from the latitude and longitude of the origin and destination airports. The merged dataset is then preprocessed for feature agglomeration for better representation of the data. In our pipeline, we make use of the map-reduce architecture. The mappers will perform find k-Nearest-Neighbours to the query flight among the $n$ training examples they receive. Then, they will train a classifier on the k-nearest-neighbours. This project explored various classifiers. The mapper outputs the actual and predicted classification of delay. One reducer collects all the classification labels and calculates the result statistics for the dataset. 
 
-We perform a sliding window classification for this time-series data. We iterate through the window size $n$ from 20 000 data records, which represent the number of flight data from one day, to 5 million records, or 80\% of the dataset. Each increment consists of 1 day's worth of flight data, around 20 000 records. 
+We perform a sliding window classification for this time-series data. 3 tests are run. First iterate through the window size $n$ from 20 000 data records, which represent the number of flight data from one day, to 5 million records, or 80\% of the dataset. Each increment consists of 1 day's worth of flight data, around 20 000 records. From this we can find out the effect of window sizes.
+
+Secondly we fix the window size $n$ to 60 000 and vary nearest neighbours $k$ from 100 to 10000 to find the effect of $k$.
+
+Lastly we fix $n$ and $k$, but drop weather and distance data, to find out if the additional information helps prediction.
 
 \begin{figure*}[htb]
 \centering
@@ -132,7 +136,7 @@ We believe flight distance do affect the length of flight delays, because in gen
 After the data is combined, we merge certain columns to better represent the data. We first merge the columns of Arrival Delay, Departure Delay, Carrier Delay, Security Delay, Weather Delay, Security Delay and Late Aircraft Delay to a column called Total Delay. Then we formulate a column IsDelayed as a boolean which is true of the Total Delay is greater than 15 minutes and false otherwise. We merge the Year, Month, Day, Departure Time into a column called DateTime, then sort the data by the DateTime. We also calculate the days from nearest American public holiday such as Christmas or New Year. This is because there tend to be more flights nearer such dates and the airports will get more congested which could result in more delays. Lastly, we convert all the nominal data columns to numeric ones to facilitate classification. 
 
 \subsection{kNN and Classifers}
-The parameter $k$ in k-Nearest-Neighbours is defined as a proportion of the window size. We define $k=n/2$, $k=n/3$ and so forth, so that each run of the dataset has the same proportion of neighbours. 	
+The parameter $k$ in k-Nearest-Neighbours is defined as a proportion of the window size. We define $k=n/2$, $k=n/3$ and so forth, so that each run of the dataset has the same proportion of neighbours. Each window would be used to predict a flight at least 2-4 hours away.
 The flights from the result of the k-Nearest-Neighbours are put through various classifiers: Gradient Boosted Regressor, Ada Boost and Decision Tree Regressor, Support Vector Machines, Decision Trees and Bernoulli Neural Networks. These classifiers are obtained from the scikit-learn package and their default settings are used, as the focus of the project is to explore the effect of window size rather than classifier parameters. 
 
 \subsection{Validating the Results}
@@ -149,7 +153,9 @@ There is only one reducer in each run of the dataset. The reducer takes in the a
 \section{Results}
 We ran a binary classification prediction problem. Given a window size $n$ training flights, we want to classify whether the query flight will be delayed or not. We ran this over several classifiers and regressors. The regressors will output an estimated number of minutes of delay for the query flight, in which we classified the flight to be delayed if the estimation were above 15 minutes, and not delayed otherwise. 
 
-We varied the number of nearest neighbours, $k$ as a fraction of $n$. For each $k$, we ran the algorithms from $n = 20 000$ to $n = 5 000 000$, each time increasing $n$ by 20 000. These numbers are chosen because 20 000 is the average number of commercial flights per day and 5 000 000 comprises of 80\% of the flights. Hence, we create a window consisting of the flight for a single day to 80\% of the flight data given, each time increasing the number of training data by the number of flights per day. We term one full run as running through $n = 20 000$ to $n = 5 000 000$ for one $k$. 
+We did 2 tests, one by varying window size $n$, with the number of nearest neighbours $k$ as a fraction of $n$. For each $k$, we ran the algorithms from $n = 20 000$ to $n = 5 000 000$, each time increasing $n$ by 20 000. These numbers are chosen because 20 000 is the average number of commercial flights per day and 5 000 000 comprises of 80\% of the flights. Hence, we create a window consisting of the flight for a single day to 80\% of the flight data given, each time increasing the number of training data by the number of flights per day. We term one full run as running through $n = 20 000$ to $n = 5 000 000$ for one $k$. From this we would be able to find out the effect of different window sizes from the dataset.
+
+For the second test we fixed $n$ at 60 000 which is the average optimal window size, while varying nearest neighbours $k$ to find out the effect of $k$ on the results.
 
 For the algorithms, we used Gradient Boosted Regressor (GBR), Ada Boost with Decision Tree Regressor, (ADR) Support Vector Machines (SVM), Decision Trees (Tree) and Bernoulli Neural Networks (BNN), with their default parameters. 
 
@@ -248,7 +254,7 @@ A gradient boosted regressor performed best when $k$ is $1/3$ the window size wi
 In general, the smaller the window size yielded better results. This shows that the most recent flight data is most useful in predicting whether the query flight will be delayed. Hence, programs and sites which do flight delay prediction may reduce space complexity by not needing to store too many flights. 
 
 \subsection{Effect of k}
-From our experiments, decreasing the fraction of window size used slightly improved the precision recall score. This points to the effectiveness of kNN in reducing the set of items within a large dataset to its most similiar ones.
+From our experiments, decreasing the window size used slightly improved the precision recall score. This points to the effectiveness of kNN in reducing the set of items within a large dataset to its most similiar ones.
 
 \subsection{Feature Selection} 
 At best, the classifiers reported results of about 90\% precision. This shows that the algorithm chosen has lesser importance as compared to the feature selection. To achieve good prediction results with this dataset, we need to pick out the salient features for classification. We tested a dataset without distance data with the Gradient Boosted Regressor, and the dataset had slightly lower precision of 80\% as compared to 82\% with distance as a feature, for $k=n/2$. This shows that the distances of flights do make a difference in prediction of delays. 
@@ -263,7 +269,13 @@ One can also explore which features are most useful in flight delay prediction. 
 One can also explore using the full dataset of flights from 1987 to 2008 with weather data. However, NOAA only provides weather data from 1900 onwards, so one has to disregard weather data from Years 1987 to 1900. To do such an experiment, one needs to come up with a more efficient way of scaling the experiment, with a variation of our map-reduce architecture.
 
 \section{Conclusion}
-This project explored a binary classification prediction problem with data from commercial flights within America in Year 2007, consisting of 7.5 million records. With several regressors and classifiers on a map-reduce architecture on the Tembusu Compute Cluster, our method reported an average precision of 90\% at best with a gradient boosted regressor and $k=n/3$ which is on par with commercial sites and better than some literature.
+This project explored a binary classification prediction problem with data from commercial flights within America in Year 2007, consisting of 7.5 million records. From the results we find that the average optimal window size is about 3 days (60 000 records), with *some k*.
+
+Adding additional data like weather and distance also helps in improving predictions.
+
+We find k nearest neighbours prunes large datasets down to the most relevant records required for prediction, therefore making slow classifiers fast to run, while being accurate.
+
+With several regressors and classifiers on a map-reduce architecture on the Tembusu Compute Cluster, our method reported an average precision of 90\% at best with a gradient boosted regressor and $k=n/3$ which is on par with commercial sites and better than some literature.
 
 \bibliography{cs5228.bib}
 \bibliographystyle{aaai}
