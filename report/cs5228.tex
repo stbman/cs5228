@@ -242,7 +242,7 @@ A gradient boosted regressor performed best when $k$ is $1/3$ the window size wi
 In general, the smaller the window size yielded better results. This shows that the most recent flight data is most useful in predicting whether the query flight will be delayed. Hence, programs and sites which do flight delay prediction may reduce space complexity by not needing to store too many flights. 
 
 \subsection{Effect of k}
-From our experiments, decreasing the fraction of window size used only slightly improved the precision recall score. 
+From our experiments, decreasing the fraction of window size used slightly improved the precision recall score. This points to the effectiveness of kNN in reducing the set of items within a large dataset to its most similiar ones.
 
 \subsection{Feature Selection} 
 At best, the classifiers reported results of about 90\% precision. This shows that the algorithm chosen has lesser importance as compared to the feature selection. To achieve good prediction results with this dataset, we need to pick out the salient features for classification. We tested a dataset without distance data with the Gradient Boosted Regressor, and the dataset had slightly lower precision of 80\% as compared to 82\% with distance as a feature, for $k=n/2$. This shows that the distances of flights do make a difference in prediction of delays. 
