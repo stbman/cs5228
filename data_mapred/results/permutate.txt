@@ -1,0 +1,16 @@
+gbr: window size = 60 000, n = 100
+
+weather and distance: 
+time: 30 mins 
+0.86013986014 0.772727272727 0.775079992471
+
+weather only: 
+time: 10 mins
+0.860093701997 0.792 0.79960572337
+
+no weather and distance: 
+time: 10 mins
+0.6282734656 0.652 0.610263843
+
+distance only: 
+0.829663934426 0.752 0.761008652004
